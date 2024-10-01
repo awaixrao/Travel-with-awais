@@ -25,7 +25,17 @@ const Login = () => {
         filter: 'brightness(0.8)' // Dim the background image slightly for contrast
       }}
     >
-      <div className="bg-white p-10 rounded-lg shadow-lg w-96 opacity-95">
+      {/* Mobile Background Image Handling */}
+      <div className="hidden md:block absolute inset-0">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage: "url('https://images.pexels.com/photos/1031008/pexels-photo-1031008.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
+            filter: 'brightness(0.8)',
+          }}
+        ></div>
+      </div>
+      <div className="bg-white p-10 rounded-lg shadow-lg w-96 opacity-95 z-10">
         <Title level={2} className="text-center text-gray-800 mb-6">Login</Title>
         <Form
           name="login"

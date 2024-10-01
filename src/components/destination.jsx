@@ -1,11 +1,24 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Use Link to navigate to TourDetail page
+
 
 const Destination = () => {
+
+
+  const handleBookNow = () => {
+  
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' 
+    });
+  };
+
+  
   const destinations = [
-    { name: 'Hunza Valley', description: 'Stunning valley with majestic mountains and serene views', img: 'https://images.pexels.com/photos/27244349/pexels-photo-27244349/free-photo-of-a-road-towards-khunjerab-pass.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
-    { name: 'Skardu', description: 'Rugged mountains, serene lakes, and a peaceful atmosphere', img: 'https://images.pexels.com/photos/19442078/pexels-photo-19442078/free-photo-of-resort-on-the-shore-of-lower-kachura-lake-at-the-foot-of-the-himalayas.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
-    { name: 'Naran', description: 'Lush meadows, rivers, and scenic landscapes', img: 'https://images.pexels.com/photos/27457479/pexels-photo-27457479/free-photo-of-a-group-of-people-standing-around-a-mountain.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
-    { name: 'Neelum', description: 'Scenic valley with dense forests and the Neelum River', img: 'https://images.pexels.com/photos/27822821/pexels-photo-27822821/free-photo-of-arang-kel-kashmir.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+    { name: 'Hunza Valley', description: 'Stunning valley with majestic mountains and serene views', img: 'https://images.pexels.com/photos/27244349/pexels-photo-27244349/free-photo-of-a-road-towards-khunjerab-pass.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', id: 1 },
+    { name: 'Skardu', description: 'ountains, serene lakes, and a peaceful atmosphere', img: 'https://images.pexels.com/photos/19442078/pexels-photo-19442078/free-photo-of-resort-on-the-shore-of-lower-kachura-lake-at-the-foot-of-the-himalayas.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', id: 2 },
+    { name: 'Naran', description: 'Lush meadows, rivers, and scenic landscapes', img: 'https://images.pexels.com/photos/27457479/pexels-photo-27457479/free-photo-of-a-group-of-people-standing-around-a-mountain.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', id: 3 },
+    { name: 'Neelum', description: 'Scenic valley with dense forests and the Neelum River', img: 'https://images.pexels.com/photos/27822821/pexels-photo-27822821/free-photo-of-arang-kel-kashmir.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', id: 4 },
   ];
 
   return (
@@ -34,6 +47,17 @@ const Destination = () => {
             <div className="p-4">
               <h3 className="text-lg md:text-xl font-bold mb-2">{destination.name}</h3>
               <p className="text-gray-700">{destination.description}</p>
+              {/* Book Now Button */}
+              <Link to={`/tour/${destination.id}`}>
+              
+    {/* Book Now Button with scroll to top */}
+    <button
+      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+      onClick={() => handleBookNow(destination.id)}
+    >
+      Book Now
+    </button>
+              </Link>
             </div>
           </div>
         ))}

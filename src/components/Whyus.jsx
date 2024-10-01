@@ -148,10 +148,7 @@ const Whyus = () => {
 
           <p className="text-black mb-4">Providing top-notch experiences across the globe. Join us today for unforgettable memories!</p>
 
-          <div className="text-black">
-            <p>&copy; 2024 Star Travels. All Rights Reserved.</p>
-            <p>Terms & Conditions | Privacy Policy</p>
-          </div>
+       
         </div>
       </footer>
     </section>
