@@ -1,7 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
 
-const tours = [
+const tours = 
+// const [ongoingTours, setOngoingTours] = useState([]);
+// const [upcomingTours, setUpcomingTours] = useState([]);
+// const [loading, setLoading] = useState(true); // Loading state for better UX
+
+// useEffect(() => {
+//     const fetchTours = async () => {
+//         try {
+//             const response = await axios.get('http://localhost:3001/tour/all'); // Replace YOUR_PORT with your actual port
+//             setOngoingTours(response.data.ongoingTours);
+//             setUpcomingTours(response.data.upcomingTours);
+//         } catch (error) {
+//             console.error('Error fetching tours:', error);
+//         } finally {
+//             setLoading(false); // Stop loading
+//         }
+//     };
+
+//     fetchTours();
+// }, []);
+
+// if (loading) {
+//     return <div>Loading...</div>; // Show loading state while data is being fetched
+// }
+
+[
   {
     id: 1,
     name: 'Hunza Valley',

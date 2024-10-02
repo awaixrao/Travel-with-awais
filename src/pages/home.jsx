@@ -1,5 +1,5 @@
 import React from "react";
-import Hero from "../components/hero";
+import Hero from "../components/Hero";
 import Destination from "../components/destination";
 import Whyus from "../components/Whyus";
 import FullScreenSlider from "../components/Slider";
