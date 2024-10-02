@@ -1,7 +1,6 @@
 // src/Hero.js
 import React from "react";
-import Filter from "./Filter"; // Ensure Filter component is correctly imported
-import Navbar from "./Navbar"; // Import the Navbar component
+import Filter from "./Filter"; 
 
 const Hero = () => {
   return (
