@@ -1,6 +1,6 @@
 // src/Hero.js
 import React from "react";
-import Filter from "./Filter"; 
+import Filter from "./filter"; 
 
 const Hero = () => {
   return (
