@@ -1,0 +1,106 @@
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { createPayment } from '../store/paymentSlice';
+import { notification } from "antd";
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51PyUtlRqf1z5C8P8sEfOhpjL034uLmjRDwsnZoWnGuf3E8HcvDUWl3yCkP8Q2LEjaGNYtcTyy925347CU4trlemJ00GLYFI11m');
+
+const PaymentForm = ({ bookingId, onPaymentSubmit }) => {
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!stripe || !elements) {
+            return; // Stripe.js has not yet loaded
+        }
+
+        const cardElement = elements.getElement(CardElement);
+
+        const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        });
+
+        if (stripeError) {
+            notification.error({
+                message: "Payment Failed",
+                description: stripeError.message,
+                placement: 'topRight',
+            });
+            return;
+        }
+
+        onPaymentSubmit(paymentMethod.id); // Trigger payment submission with paymentMethod ID
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+                <label htmlFor="card" className="block mb-2 font-semibold">Card Details</label>
+                <CardElement id="card" className="p-2 border border-gray-300 rounded-md" />
+            </div>
+
+            <button
+                type="submit"
+                className="w-full p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                disabled={!stripe}
+            >
+                Pay Now
+            </button>
+        </form>
+    );
+};
+
+const PaymentPage = () => {
+    const dispatch = useDispatch();
+    const { id: bookingId } = useParams(); 
+
+    const paymentLoading = useSelector((state) => state.payments.loading);
+    const paymentError = useSelector((state) => state.payments.error);
+
+    const handlePaymentSubmit = async (paymentMethodId) => {
+        const paymentData = {
+            orderId: bookingId,
+            paymentMethodId,
+            amount: 100, // Replace with actual amount; ensure this is the correct amount
+        };
+
+        const paymentResult = await dispatch(createPayment(paymentData));
+
+        if (paymentResult.type === 'payments/create/fulfilled') {
+            notification.success({
+                message: "Payment Successful",
+                description: "Your payment has been processed successfully!",
+                placement: 'topRight',
+            });
+        } else {
+            notification.error({
+                message: "Payment Failed",
+                description: paymentResult.error.message,
+                placement: 'topRight',
+            });
+        }
+    };
+
+    return (
+        <section className="w-full p-8 md:p-16 bg-gray-100">
+            <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-bold mb-4">Enter Payment Information</h2>
+
+                <Elements stripe={stripePromise}>
+                    <PaymentForm bookingId={bookingId} onPaymentSubmit={handlePaymentSubmit} />
+                </Elements>
+
+                {paymentLoading && <p>Processing payment...</p>}
+                {paymentError && <p className="text-red-500">{paymentError}</p>}
+            </div>
+        </section>
+    );
+};
+
+export default PaymentPage;

@@ -1,9 +1,23 @@
 // src/Navbar.js
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom"; 
+import { useSelector, useDispatch } from 'react-redux'; 
+import { useNavigate } from 'react-router-dom'; 
+import { LogOut } from "lucide-react"; 
+import { logout } from '../store/userLoginSlice'; 
+
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const userLogin = useSelector(state => state.userLogin);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout()); 
+    navigate('/login'); 
+};
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -40,7 +54,7 @@ const Navbar = () => {
                 to="https://resturant-project-ruddy.vercel.app/"
                 className="block px-3 py-2 text-white hover:text-indigo-300"
               >
-                Resturant
+                Restaurant
               </Link>
 
               <Link
@@ -58,12 +72,20 @@ const Navbar = () => {
             </div>
 
             <div className="hidden sm:flex items-center">
-              <Link
-                to="/login"
-                className="px-3 py-2 text-white hover:text-indigo-300"
-              >
-                Login / Sign up
-              </Link>
+              {/* Show Login/Sign up link only if not logged in */}
+              {!userLogin.isLogin ? (
+                <Link
+                  to="/login"
+                  className="px-3 py-2 text-white hover:text-indigo-300"
+                >
+                  Login / Sign up
+                </Link>
+              ) : (
+                <button onClick={handleLogout} className="flex items-center px-3 py-2 text-white hover:text-indigo-300">
+                  <LogOut className="mr-1" /> {/* Logout icon with some margin */}
+                  Logout
+                </button>
+              )}
             </div>
 
             <div className="sm:hidden flex items-center">
@@ -102,38 +124,42 @@ const Navbar = () => {
                 Home
               </Link>
               <Link
-                to="#"
+                to="/tours"
                 className="block px-3 py-2 text-white hover:text-indigo-300"
               >
                 Tours
               </Link>
-
               <Link
                 to="https://resturant-project-ruddy.vercel.app/"
                 className="block px-3 py-2 text-white hover:text-indigo-300"
               >
-                Resturant
-
-
+                Restaurant
               </Link>
               <Link
-                to="#"
+                to="/about"
                 className="block px-3 py-2 text-white hover:text-indigo-300"
               >
                 About Us
               </Link>
               <Link
-                to="#"
+                to="/contact"
                 className="block px-3 py-2 text-white hover:text-indigo-300"
               >
                 Contact
               </Link>
-              <Link
-                to="/login"
-                className="block px-3 py-2 text-white hover:text-indigo-300"
-              >
-                Login / Sign up
-              </Link>
+              {!userLogin.isLogin ? (
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 text-white hover:text-indigo-300"
+                >
+                  Login / Sign up
+                </Link>
+              ) : (
+                <button onClick={handleLogout} className="block px-3 py-2 text-white hover:text-indigo-300 flex items-center">
+                  <LogOut className="mr-1" />
+                  Logout
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -1,18 +1,30 @@
 // src/SignUp.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Typography } from 'antd';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../store/registerUserSlice';
 
 const { Title } = Typography;
 
 const SignUp = () => {
-  const navigate = useNavigate(); // Initialize navigate
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error, user } = useSelector((state) => state.registerUser);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   const onFinish = (values) => {
-    console.log('Success:', values);
-    // You can add your signup logic here
-    // After successful signup, redirect to the login page
-    navigate('/login'); // Redirect to login page
+    if (values.password !== values.confirmPassword) {
+      return alert("Passwords do not match!");
+    }
+
+    dispatch(registerUser(values));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -29,6 +41,9 @@ const SignUp = () => {
     >
       <div className="bg-white p-10 rounded-lg shadow-lg w-96 opacity-95">
         <Title level={2} className="text-center text-gray-800 mb-6">Sign Up</Title>
+        
+        {error && <p className="text-red-600">{error}</p>} {/* Display error message */}
+
         <Form
           name="signup"
           initialValues={{ remember: true }}
@@ -80,11 +95,13 @@ const SignUp = () => {
               type="primary" 
               htmlType="submit" 
               className="w-full bg-blue-600 hover:bg-blue-700 transition duration-200 rounded-lg p-3 text-lg font-semibold"
+              loading={loading} // Show loading spinner if the request is in progress
             >
               Sign Up
             </Button>
           </Form.Item>
         </Form>
+
         <p className="mt-4 text-sm text-center text-gray-600">
           Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Login</Link>
         </p>
