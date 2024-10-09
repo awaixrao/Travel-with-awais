@@ -7,6 +7,12 @@ export const createPayment = createAsyncThunk(
     'payments/create',
     async (paymentData, { rejectWithValue }) => {
         try {
+            const token = getToken();
+            const config = {
+              headers: {
+                'Authorization': `Bearer ${token}`,  
+              },
+            };
             const response = await axios.post('http://localhost:3001/payment/create', paymentData);
             return response.data; 
         } catch (error) {

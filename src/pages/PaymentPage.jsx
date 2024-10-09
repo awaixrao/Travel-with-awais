@@ -16,7 +16,7 @@ const PaymentForm = ({ bookingId, onPaymentSubmit }) => {
         e.preventDefault();
 
         if (!stripe || !elements) {
-            return; // Stripe.js has not yet loaded
+            return; 
         }
 
         const cardElement = elements.getElement(CardElement);
@@ -65,7 +65,7 @@ const PaymentPage = () => {
 
     const handlePaymentSubmit = async (paymentMethodId) => {
         const paymentData = {
-            orderId: bookingId,
+            bookingId: bookingId,
             paymentMethodId,
             amount: 100, // Replace with actual amount; ensure this is the correct amount
         };

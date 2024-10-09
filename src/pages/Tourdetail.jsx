@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTourById } from '../store/tourSlice'; // Action to fetch tour details by ID
+import { fetchTourById } from '../store/tourSlice'; 
 import LoginModal from '../components/LoginModal';
 
 const TourDetail = () => {
-  const { id } = useParams(); // Extract the id from the URL
+  const { id } = useParams(); 
   const dispatch = useDispatch();
-  const isLogin = useSelector((state) => state.userLogin.isLogin); // Redux login state
-  const { tour, loading, error } = useSelector((state) => state.tours); // Get tour data from Redux
+  const isLogin = useSelector((state) => state.userLogin.isLogin);
+  const { tour, loading, error } = useSelector((state) => state.tours); 
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Fetch tour details when component loads
   useEffect(() => {
-    dispatch(fetchTourById(id)); // Dispatch action to fetch tour by ID
+    dispatch(fetchTourById(id)); 
   }, [dispatch, id]);
 
   const handleConfirmBooking = () => {
     if (!isLogin) {
       setIsLoginModalOpen(true); // Show login modal if not logged in
     } else {
-      // User is logged in, continue to booking page
-      // Using Link to navigate to the booking page with the tour ID
+    
     }
   };
 
   const handleLogin = () => {
-    setIsLoginModalOpen(false); // Close modal after login
+    setIsLoginModalOpen(false); 
   };
 
   if (loading) {
@@ -51,6 +49,8 @@ const TourDetail = () => {
               <h2 className="text-3xl font-bold text-gray-800 mb-4">{tour.name}</h2>
               <p className="text-gray-700 mb-4">{tour.description}</p>
               <p className="text-xl font-semibold text-green-600 mb-4">Price: ${tour.price}</p>
+                <p className="text-gray-600"> Date: {new Date(tour.startDate).toDateString()}</p>
+
               <p className="text-sm text-gray-600 mb-2">From: {tour.startLocation} </p>
               <p className="text-sm text-gray-600 mb-2"> Location : {tour.locations} </p>              
               <h4 className="text-lg font-semibold text-gray-800 mb-2">Tour Highlights</h4>
