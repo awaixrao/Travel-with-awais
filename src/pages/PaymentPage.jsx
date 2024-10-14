@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { createPayment } from '../store/paymentSlice';
 import { notification } from "antd";
+import axios from 'axios';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -35,7 +34,7 @@ const PaymentForm = ({ bookingId, onPaymentSubmit }) => {
             return;
         }
 
-        onPaymentSubmit(paymentMethod.id); // Trigger payment submission with paymentMethod ID
+        onPaymentSubmit(paymentMethod.id); 
     };
 
     return (
@@ -57,33 +56,47 @@ const PaymentForm = ({ bookingId, onPaymentSubmit }) => {
 };
 
 const PaymentPage = () => {
-    const dispatch = useDispatch();
     const { id: bookingId } = useParams(); 
-
-    const paymentLoading = useSelector((state) => state.payments.loading);
-    const paymentError = useSelector((state) => state.payments.error);
+    const [loading, setLoading] = useState(false); 
+    const [error, setError] = useState(null);
 
     const handlePaymentSubmit = async (paymentMethodId) => {
+        setLoading(true);
+        setError(null);
+
         const paymentData = {
             bookingId: bookingId,
             paymentMethodId,
-            amount: 100, // Replace with actual amount; ensure this is the correct amount
+            amount: 100, 
         };
 
-        const paymentResult = await dispatch(createPayment(paymentData));
+        try {
+            const token = localStorage.getItem('token'); 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
 
-        if (paymentResult.type === 'payments/create/fulfilled') {
-            notification.success({
-                message: "Payment Successful",
-                description: "Your payment has been processed successfully!",
-                placement: 'topRight',
-            });
-        } else {
+            const response = await axios.post('http://localhost:3001/payment/create', paymentData, config);
+            
+            if (response.status === 200) {
+                notification.success({
+                    message: "Payment Successful",
+                    description: "Your payment has been processed successfully!",
+                    placement: 'topRight',
+                });
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "An error occurred during payment processing.";
             notification.error({
                 message: "Payment Failed",
-                description: paymentResult.error.message,
+                description: errorMessage,
                 placement: 'topRight',
             });
+            setError(errorMessage);
+        } finally {
+            setLoading(false); 
         }
     };
 
@@ -96,8 +109,8 @@ const PaymentPage = () => {
                     <PaymentForm bookingId={bookingId} onPaymentSubmit={handlePaymentSubmit} />
                 </Elements>
 
-                {paymentLoading && <p>Processing payment...</p>}
-                {paymentError && <p className="text-red-500">{paymentError}</p>}
+                {loading && <p>Processing payment...</p>}
+                {error && <p className="text-red-500">{error}</p>}
             </div>
         </section>
     );

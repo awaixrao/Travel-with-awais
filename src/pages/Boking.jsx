@@ -4,7 +4,7 @@ import { fetchTourById } from '../store/tourSlice';
 import { createBooking } from '../store/bookingSlice';
 import { useParams, useNavigate } from 'react-router-dom';
 import { notification } from "antd";
-import {jwtDecode} from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';  
 
 const BookingPage = () => {
     const { id } = useParams();
@@ -67,7 +67,6 @@ const BookingPage = () => {
             });
         }
 
-        // Check if email and username are provided
         if (!email || !username) {
             return notification.error({
                 message: "Booking Failed",
@@ -78,8 +77,8 @@ const BookingPage = () => {
   
         const bookingData = {
             user: userId,
-            email: email,  
-            username: username,  
+            email: email,  // Renamed to 'email' for backend compatibility
+            username: username,  // Renamed to 'username' for backend compatibility
             tours: [{ _id: tour._id, seatsBooked: seats, pricePerSeat: tour.price }],
             totalAmount: totalPrice,
         };
@@ -93,7 +92,36 @@ const BookingPage = () => {
                 placement: 'topRight',
             });
   
-            // Navigate to Payment Page with necessary data
+            // Send a confirmation email
+            const emailPayload = {
+                userEmail: email,  
+                userName: username, 
+                tourName: tour.name,
+                seats: seats,
+                totalAmount: totalPrice,
+            };
+
+            try {
+                const response = await fetch('http://localhost:3001/emails/send-booking-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(emailPayload),
+                });
+                
+                const data = await response.json();
+                console.log('Email API Response:', data); // Log the response to see details
+                
+
+                if (!response.ok) {
+                    throw new Error('Error sending confirmation email');
+                }
+            } catch (error) {
+                console.error("Error sending email:", error);
+            }
+  
+            // Navigate to Payment Page
             navigate(`/booking/${bookingResult.payload._id}/payment`, {
                 state: {
                     bookingId: bookingResult.payload._id, 
@@ -101,7 +129,6 @@ const BookingPage = () => {
                 },
             });
         } else {
-            // Handle booking error
             notification.error({
                 message: "Booking Failed",
                 description: bookingResult.error.message,
@@ -119,7 +146,6 @@ const BookingPage = () => {
                 <p className="text-lg mb-2">Date: {new Date(tour.startDate).toDateString()}</p>
                 <p className="text-lg mb-2">Price per seat: ${tour.price}</p>
 
-                {/* Username Field */}
                 <label htmlFor="username" className="block mb-2 text-lg font-semibold">
                     Your Name:
                 </label>
@@ -134,7 +160,6 @@ const BookingPage = () => {
                     required
                 />
 
-                {/* Email Field */}
                 <label htmlFor="email" className="block mb-2 text-lg font-semibold">
                     Email Address:
                 </label>
@@ -149,7 +174,6 @@ const BookingPage = () => {
                     required
                 />
 
-                {/* Seat Selection */}
                 <label htmlFor="seats" className="block mb-2 text-lg font-semibold">
                     Number of seats:
                 </label>
@@ -166,7 +190,6 @@ const BookingPage = () => {
 
                 <p className="text-xl font-bold mb-4">Total Price: ${totalPrice}</p>
 
-                {/* Booking Submit */}
                 <form onSubmit={handleBookingSubmit}>
                     <button
                         type="submit"

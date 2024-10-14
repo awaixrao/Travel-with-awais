@@ -3,7 +3,6 @@ import registerUserReducer from './registerUserSlice';
 import userLoginReducer from './userLoginSlice';
 import tourReducer from './tourSlice'; 
 import bookingReducer from './bookingSlice';
-import paymentReducer from './paymentSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +10,5 @@ export const store = configureStore({
     registerUser: registerUserReducer,
     tours: tourReducer, 
     bookings: bookingReducer,
-    payments: paymentReducer,
   },
 });
